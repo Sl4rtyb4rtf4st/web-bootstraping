@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Pomodoro Timer</title>
+  <title><?= $title?></title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -19,10 +19,10 @@
 </head>
 
 <body>
-  <main class="container flex-col-cen"> 
+  <div class="container flex-col-cen"> 
     <section class="top-section flex-col-cen-around">
       <header class="flex-col-cen cetered">
-        <h1>App Title</h1>
+        <h1><?= "PHP "?>App <?= $title?></h1>
         <h2>
           App Subtitle
         </h2>
@@ -30,14 +30,3 @@
           App sub-subtitle
         </h3>
       </header>
-    </section>
-    <footer>
-      <p>
-        Footer text
-      </p>
-    </footer>
-    
-  </main>
-  <script src="js/main.js"></script>
-</body>
-</html>

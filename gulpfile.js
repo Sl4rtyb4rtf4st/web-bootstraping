@@ -7,12 +7,13 @@ const gulp = require('gulp'),
       browserSync = require('browser-sync').create(),
       sourcemaps = require('gulp-sourcemaps'),
       autoprefixer = require('gulp-autoprefixer'),
-      lec = require('gulp-line-ending-corrector');
+      lec = require('gulp-line-ending-corrector'),
+      php = require('gulp-connect-php');
 
 // var pipeline = require('readable-stream').pipeline; // getting error
 
 // Copy all image files from base dir
-gulp.task('copyFav', function(done) {
+gulp.task('copy-favicon', function(done) {
   gulp.src(['./src/*.ico', './src/*.png'])
     .pipe(gulp.dest('dist'))
     .pipe(browserSync.stream());
@@ -20,8 +21,8 @@ gulp.task('copyFav', function(done) {
 });
 
 // Copy all the text files from base dir
-gulp.task('copyfiles', function(done) {
-  gulp.src(['/src/*.svg', './src/*.html', './src/site.webmanifest', './src/*.xml'])
+gulp.task('copy-files', function(done) {
+  gulp.src(['/src/*.svg', './src/*.html', './src/**/*.php', './src/site.webmanifest', './src/*.xml'])
     .pipe(lec())
     .pipe(gulp.dest('dist'))
     .pipe(browserSync.stream());
@@ -40,7 +41,7 @@ gulp.task('imagemin', function(done) {
 });
 
 // Copy audio files
-gulp.task('copysounds', function(done) {
+gulp.task('copy-sounds', function(done) {
   gulp.src('./src/sounds/*.*')
     .pipe(gulp.dest('./dist/sounds'))
     .pipe(browserSync.stream());
@@ -80,17 +81,25 @@ gulp.task('minify-js', function(done) {
   done();
 });
 
-// Watch for changes in the destination folders
-gulp.task('watch', function() {
-  browserSync.init({
-    server: {
-      baseDir: "./dist"
-    }
-  });
+
+
+// Browsersync the 
+// Watch for changes in the source folders
+gulp.task('php-sync-watch', function() {
+  php.server({}, function (){
+    browserSync.init({
+      proxy:"localhost:8010",
+      baseDir: "./",
+      open:true,
+      notify:false
+    });
+  })
+
   // Only include the files which are likely to change 
-  gulp.watch('src/*.html', gulp.parallel('copyfiles')).on('change', browserSync.reload);
+  gulp.watch('src/**/*.html', gulp.parallel('copy-files')).on('change', browserSync.reload);
+  gulp.watch('src/**/*.php', gulp.parallel('copy-files')).on('change', browserSync.reload);
   gulp.watch('src/js/*.js', gulp.parallel('minify-js')).on('change', browserSync.reload);
   gulp.watch('src/css/*.css', gulp.parallel('minify-css')).on('change', browserSync.reload);
 });
 
-gulp.task('default', gulp.series('copyfiles', 'copyFav', 'copysounds', 'imagemin', 'minify-css', 'minify-js'));
+gulp.task('default', gulp.series('copy-files', 'copy-favicon', 'copy-sounds', 'imagemin', 'minify-css', 'minify-js'));
